@@ -14,14 +14,16 @@ void process_vector(std::vector<char>& vec)
     while (it!=vec.end()) {
         auto it_2 = it;
         std::advance(it_2, 1);
-        while (*it == *(it_2) ) {
             std::advance(it_2, 1);
         }
+        } while (it_2 != vec.end() && *it == *it_2);
         if (std::distance(it, it_2) >= 3) {
             vec.erase(it, it_2);
             triplet_exists = true;
         }
-        std::advance(it, 1);
+        if (it!=vec.end()) {
+            std::advance(it, 1);
+        }
     }
 
     if (triplet_exists) {
