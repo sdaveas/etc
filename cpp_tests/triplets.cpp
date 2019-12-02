@@ -50,35 +50,6 @@ void process_vector(std::vector<char>& vec)
     }
 }
 
-// Ugly solution which I am not going to document
-// void process_vector(std::vector<char> vec)
-// {
-//     bool triplet_exists = false;
-//     do {
-//         std::vector<char> new_vec;
-//         triplet_exists = false;
-//         for (int i=0; i<vec.size(); i++) {
-//             char current = vec[i];
-//             int j=1;
-//             while (vec[i] == vec[i+j]) {
-//                 j++;
-//             }
-//             if (j >= 3) {
-//                 i = i + j - 1;
-//                 triplet_exists = true;
-//             }
-//             else {
-//                 new_vec.push_back(vec[i]);
-//             }
-//         }
-//         for (int i=0; i<new_vec.size(); i++) {
-//             std::cout << new_vec[i] << " ";
-//         }
-//         std::cout << std::endl;
-//         vec = new_vec;
-//      } while(triplet_exists);
-// }
-
 int main()
 {
     std::string input = "bbccaaacb";
