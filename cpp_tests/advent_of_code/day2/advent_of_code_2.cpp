@@ -26,7 +26,7 @@ int main()
 {
     size_t size = 149;
     std::vector<int> vec(size);
-    std::ifstream f_read{"advent_code_2.in"};
+    std::ifstream f_read{"advent_of_code_2.in"};
     // std::ifstream f_read{"test_1.in"};
 
     for(int i=0; i<size; i++) {
