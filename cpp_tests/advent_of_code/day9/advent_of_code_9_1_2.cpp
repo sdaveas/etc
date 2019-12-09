@@ -164,6 +164,10 @@ int main()
         long long int x;
         f_read >> x;
         vec.push_back(x);
+        if (!f_read.eof()) {
+            char comma;
+            f_read >> comma;
+        }
     }
     for (int i=0; i<2029; i++) {
         vec.push_back(0);
