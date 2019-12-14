@@ -200,8 +200,6 @@ struct Point
     };
 };
 
-
-
 void move_robot(Point& prev_pos, Point& curr_pos , rotation_t rotation)
 {
     Point new_pos = curr_pos;
@@ -267,7 +265,6 @@ int main()
         }
     }
 
-
     for (int i=0; i<1000000; i++) {
         vec.push_back(0);
     }
@@ -277,7 +274,7 @@ int main()
     std::unordered_map<Point, fill_t, Point::Hasher> panels;
     std::vector<fill_t> input{};
 
-    input.push_back(fill_t::empty);
+    input.push_back(fill_t::full);
 
     int round = 0;
     int skipping = 0;
@@ -290,8 +287,11 @@ int main()
             break;
         }
 
+
         fill_t fill = static_cast<fill_t>(output[output_t::fill]);
-        panels.insert({curr_pos, fill});
+        panels[curr_pos] = fillfull;
+        // This does NOT update the value of the key
+        //  panels.insert({curr_pos, fill});
 
         rotation_t rotation = static_cast<rotation_t>(output[output_t::rotation]);
         move_robot(prev_pos, curr_pos, rotation);
@@ -302,7 +302,6 @@ int main()
     }
 
     printf("rounds %d\n", round);
-
     printf("size: %d\n", panels.size());
 
     char p;
