@@ -1,9 +1,13 @@
+// Having two vectors with the same elements except one, find the missing
+// element from the smaller vector
+
 #include <iostream>
 #include <vector>
 #include <unordered_map>
 #include <set>
 #include <algorithm>
 
+// XOR the two vectors
 template <typename T>
 std::pair<T, bool> find_missing_1(std::vector<T> & first, std::vector<T> & second)
 {
@@ -27,6 +31,7 @@ std::pair<T, bool> find_missing_1(std::vector<T> & first, std::vector<T> & secon
     return {xor_result, found};
 }
 
+// Using std::unordered map
 template<typename T>
 std::pair<T, bool> find_missing_2(std::vector<T> & first, std::vector<T> & second)
 {
@@ -45,6 +50,7 @@ std::pair<T, bool> find_missing_2(std::vector<T> & first, std::vector<T> & secon
     return {T(), false};
 }
 
+// Using std::vector
 template<typename T>
 std::pair<T, bool> find_missing_3(std::vector<T> first, std::vector<T> second)
 {
@@ -74,6 +80,7 @@ std::pair<T, bool> find_missing_3(std::vector<T> first, std::vector<T> second)
     return {missing, true};
 }
 
+// Using std::set
 template<typename T>
 std::pair<T, bool> find_missing_4(std::vector<T> & first, std::vector<T> & second)
 {
@@ -91,25 +98,18 @@ std::pair<T, bool> find_missing_4(std::vector<T> & first, std::vector<T> & secon
     return {T(), false};
 }
 
+// Brute force
 template<typename T>
 std::pair<T, bool> find_missing_5(std::vector<T> & first, std::vector<T> & second)
 {
-    if (first.size() > second.size()) {
-        for (auto f:first) {
-            if (std::find(second.begin(), second.end(), f) == second.end()) {
-                return {f ,true};
-            }
+    auto& small = first.size() <= second.size() ? first : second;
+    auto& big   = first.size() >= second.size() ? first : second;
+
+    for (auto& element:big) {
+        if (std::find(small.begin(), small.end(), element) == small.end()) {
+            return {element ,true};
         }
     }
-    else {
-        for (auto f:second) {
-            if (std::find(first.begin(), first.end(), f) == first.end()) {
-                return {f ,true};
-            }
-        }
-    }
-
-
     return {T(), false};
 }
 
@@ -126,7 +126,7 @@ int main()
     init_vector(first,  size);
     init_vector(second, size);
 
-    // mess firest vector arround
+    // mess first vector arround
     std::swap(first[first.size()/2], first[first.size()-1]);
     first.pop_back();
 
@@ -138,7 +138,7 @@ int main()
     std::cout << "Found: " << result_3.first << "(" << result_3.second << ")" << std::endl;
     auto result_4 = find_missing_4(first, second);
     std::cout << "Found: " << result_4.first << "(" << result_4.second << ")" << std::endl;
-    auto result_5 = find_missing_4(first, second);
+    auto result_5 = find_missing_5(first, second);
     std::cout << "Found: " << result_5.first << "(" << result_5.second << ")" << std::endl;
 
 
