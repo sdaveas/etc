@@ -22,7 +22,7 @@ reactions = {}
 # reactions['E'] = {'quantity': 1, 'ingredients': [Chemical(7, 'A'), Chemical(1, 'D')]}
 # reactions['FUEL'] = {'quantity': 1, 'ingredients': [Chemical(7, 'A'), Chemical(1, 'E')]}
 
-f = open("input_3", "r")
+f = open("input_5", "r")
 lines = f.read().splitlines()
 for l in lines:
     l1 = l.replace(',','').replace('=>','').replace('  ', ' ').split(' ')
@@ -33,7 +33,7 @@ for l in lines:
         ingr.append(Chemical(int(l1[i]), l1[i+1]))
     reactions[key] = {'quantity': int(quantity), 'ingredients': ingr}
 
-print_reactions(reactions)
+# print_reactions(reactions)
 
 def ceiling(value1, value2):
     if value1 % value2 == 0:
@@ -43,44 +43,87 @@ def ceiling(value1, value2):
     return res
 
 results = {}
+leftovers= {}
+
+def retrieve_leftovers(element, target_quantity):
+    if element not in leftovers:
+        leftovers[element] = 0
+    else:
+        if leftovers[element] >= target_quantity:
+            leftovers[element] -= target_quantity
+            return target_quantity
+        else:
+            leftover = leftovers[element]
+            leftovers[element] = 0
+            return leftover
+    return 0
+
+def add_leftovers(element, produced, target_quantity):
+    if element not in leftovers:
+        leftovers[element] = produced - target_quantity
+    else:
+        leftovers[element] += produced - target_quantity
 
 def find_OREs(reactions, target_element, target_quantity, tabs):
 
-    quantity = reactions[target_element]['quantity']
     ingredients = reactions[target_element]['ingredients']
+    reaction_quantity = reactions[target_element]['quantity']
 
-    if ingredients[0].element == 'ORE':
-        # res = ceiling(target_quantity, quantity) * ingredients[0].quantity
-        if target_element in results:
-            results[target_element]+=target_quantity
-        else:
-            results[target_element]=target_quantity
-        t = " "*tabs
-        print(t, end= ' ')
-        print("element ", target_element, " is made of OREs. We need ", target_quantity)
-        return target_quantity
+    leftover = retrieve_leftovers(target_element, target_quantity)
+    print(tabs, "We need", target_quantity, "of", target_element, "and we already have", leftover)
+    target_quantity -= leftover
 
+    if target_quantity == 0:
+        print(tabs, "returning 0")
+        return 0
+
+    produced = ceiling(target_quantity, reaction_quantity) * reaction_quantity
     total = 0
     for i in ingredients:
-        t = " "*tabs
-        print(t, end= ' ')
-        print("element ", target_element, " needed ", i.quantity, " ", i.element)
-        total += find_OREs(reactions, i.element, i.quantity * target_quantity, tabs+2)
+        print(tabs, "Element", target_element, "needs", ceiling(produced, reaction_quantity)*i.quantity, i.element)
+        if i.element == 'ORE':
+            ore = ceiling(produced, reaction_quantity) * i.quantity
+            print(target_quantity, target_quantity, produced)
+            add_leftovers(target_element, produced, target_quantity)
+            pprint(leftovers)
+            print(tabs, ore, "ORE was used")
+            return ore
+        total += find_OREs(reactions, i.element, i.quantity*target_quantity, tabs + "  ")
+    add_leftovers(target_element, produced, target_quantity)
+    pprint(leftovers)
     return total
 
-find_OREs(reactions, 'FUEL', 1, 0)
+# def find_OREs(reactions, target_element, target_quantity, tabs):
+#
+#     t = " "*tabs
+#     quantity = reactions[target_element]['quantity']
+#     ingredients = reactions[target_element]['ingredients']
+#
+#     print(t, end=' ')
+#     print(target_element, quantity)
+#
+#
+#
+#     if ingredients[0].element == 'ORE':
+#         if target_element in results:
+#             results[target_element]+=target_quantity
+#         else:
+#             results[target_element]=target_quantity
+#         print(t, end= ' ')
+#         print("element ", target_element, " is made of OREs. We need ", target_quantity)
+#         print(t, end= ' ')
+#         print("We already have ", see_leftovers(target_element))
+#         return target_quantity
+#
+#     total = 0
+#     for i in ingredients:
+#         t = " "*tabs
+#         print(t, end= ' ')
+#         print("element ", target_element, " needed ", i.quantity, " ", i.element)
+#         total += find_OREs(reactions, i.element, i.quantity * target_quantity, tabs+2)
+#     return total
+
+total = find_OREs(reactions, 'FUEL', 1, "")
 
 print()
-pprint(results)
-
-
-total = 0
-for r in results.keys():
-    element_needed_quantity = results[r]
-    element_react_quantity = reactions[r]['quantity']
-    ore_for_element = reactions[r]['ingredients'][0].quantity
-    ore = ceiling(element_needed_quantity, element_react_quantity) * ore_for_element
-    print("element ", r, " needed ", ore, " ORE")
-    total+=ore
-
-print("Total: ", total)
+print(total)
