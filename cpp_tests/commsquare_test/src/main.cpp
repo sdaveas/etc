@@ -3,7 +3,7 @@
 #include <iostream>
 
 int main() {
-  FileReader fr("../file.txt");
+  FileReader fr("../../file.txt");
   fr.print();
 
   Regex rgx("a|e|i|o|u");

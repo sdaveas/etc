@@ -1,6 +1,6 @@
 #include <iostream>
 #define CATCH_CONFIG_MAIN
-#include "../Regex.hpp"
+#include "../src/Regex.hpp"
 #include <catch2/catch.hpp>
 
 TEST_CASE("Regex") {
