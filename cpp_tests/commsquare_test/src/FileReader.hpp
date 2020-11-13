@@ -5,16 +5,18 @@
 
 class FileReader {
 public:
-  FileReader(std::string data) : m_ifstream(std::move(data)), m_buffer() {
-    m_ifstream.seekg(0, std::ios::end);
-    m_buffer.resize(m_ifstream.tellg());
-    m_ifstream.seekg(0);
-    m_ifstream.read(m_buffer.data(), m_buffer.size());
+  FileReader(std::string data) : m_buffer() {
+    std::ifstream ifs(std::move(data));
+    ifs.seekg(0, std::ios::end);
+    m_buffer.resize(ifs.tellg());
+    ifs.seekg(0);
+    ifs.read(m_buffer.data(), m_buffer.size());
+    ifs.close();
   }
   FileReader(const FileReader &) = delete;
   FileReader(FileReader &&) = delete;
   FileReader &operator=(FileReader) = delete;
-  ~FileReader() { m_ifstream.close(); }
+  ~FileReader() {}
 
   inline const std::vector<char> &buffer() { return m_buffer; }
 
@@ -26,6 +28,5 @@ public:
   }
 
 private:
-  std::ifstream m_ifstream;
   std::vector<char> m_buffer;
 };
